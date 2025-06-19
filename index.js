@@ -15,9 +15,19 @@ app.get("/", function (req, res) {
   res.sendFile(process.cwd() + "/views/index.html");
 });
 
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+const urlSchema = new mongoose.Schema({
+  originalURL: String,
+  shortURL: Number,
+});
+
 // Your first API endpoint
-app.get("/api/hello", function (req, res) {
-  res.json({ greeting: "hello API" });
+app.post("/api/shorturl", function (req, res) {
+  res.json({ original_url: originalURL, short_url: shortURL });
 });
 
 app.listen(port, function () {

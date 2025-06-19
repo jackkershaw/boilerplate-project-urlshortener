@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 const mongoose = require("mongoose");
+const dns = require("dns");
 
 const bodyParser = require("body-parser");
 
@@ -38,7 +39,16 @@ app.post(
   (req, res) => {
     let originalURL = req.body["url"];
     let shortURL = 3;
-    res.json({ original_url: originalURL, short_url: shortURL });
+    const myURL = new URL(originalURL);
+
+    dns.lookup(myURL.host, (err) => {
+      if (err) {
+        res.json({ error: "invalid url" });
+        return;
+      } else {
+        res.json({ original_url: originalURL, short_url: shortURL });
+      }
+    });
   }
 );
 

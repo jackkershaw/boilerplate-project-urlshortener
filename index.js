@@ -35,7 +35,7 @@ let Url = mongoose.model("Url", urlSchema);
 const createURL = async (urlData) => {
   try {
     const shorturl = new Url(urlData);
-    await Url.save();
+    await shorturl.save();
     console.log("Url created:", Url);
   } catch (err) {
     console.error("Error creating user:", err.message);
@@ -48,7 +48,6 @@ app.post(
   bodyParser.urlencoded({ extended: false }),
   (req, res) => {
     let originalURL = req.body["url"];
-    // number of database entries + 1 //
     const myURL = new URL(originalURL);
 
     dns.lookup(myURL.host, async (err) => {
@@ -56,7 +55,7 @@ app.post(
         res.json({ error: "invalid url" });
         return;
       } else {
-        const count = await url.countDocuments();
+        const count = await Url.countDocuments();
         let shortURL = count + 1;
         createURL({
           originalURL: originalURL,

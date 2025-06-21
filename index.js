@@ -50,14 +50,14 @@ app.post(
     let originalURL = req.body["url"];
     const myURL = new URL(originalURL);
 
-    dns.lookup(myURL.host, async (err) => {
+    dns.lookup(myURL.hostname, async (err) => {
       if (err) {
         res.json({ error: "invalid url" });
         return;
       } else {
         const count = await Url.countDocuments();
         let shortURL = count + 1;
-        createURL({
+        await createURL({
           originalURL: originalURL,
           shortURL: shortURL,
         });

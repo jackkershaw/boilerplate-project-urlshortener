@@ -30,7 +30,17 @@ const urlSchema = new mongoose.Schema({
   shortURL: Number,
 });
 
-let url = mongoose.model("Url", urlSchema);
+let Url = mongoose.model("Url", urlSchema);
+
+const createURL = async (urlData) => {
+  try {
+    const shorturl = new Url(urlData);
+    await Url.save();
+    console.log("Url created:", Url);
+  } catch (err) {
+    console.error("Error creating user:", err.message);
+  }
+};
 
 // Your first API endpoint
 app.post(
@@ -38,14 +48,20 @@ app.post(
   bodyParser.urlencoded({ extended: false }),
   (req, res) => {
     let originalURL = req.body["url"];
-    let shortURL = 3;
+    // number of database entries + 1 //
     const myURL = new URL(originalURL);
 
-    dns.lookup(myURL.host, (err) => {
+    dns.lookup(myURL.host, async (err) => {
       if (err) {
         res.json({ error: "invalid url" });
         return;
       } else {
+        const count = await url.countDocuments();
+        let shortURL = count + 1;
+        createURL({
+          originalURL: originalURL,
+          shortURL: shortURL,
+        });
         res.json({ original_url: originalURL, short_url: shortURL });
       }
     });

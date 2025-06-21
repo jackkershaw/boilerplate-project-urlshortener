@@ -67,6 +67,19 @@ app.post(
   }
 );
 
+app.get("/api/shorturl/:input", async (req, res) => {
+  const input = req.params.input;
+  try {
+    const result = await Url.findOne({ shortURL: input });
+    if (!result) {
+      return res.status(404).json({ error: "URL not found" });
+    }
+    res.redirect(result.originalURL);
+  } catch (err) {
+    console.error(err);
+  }
+});
+
 app.listen(port, function () {
   console.log(`Listening on port ${port}`);
 });

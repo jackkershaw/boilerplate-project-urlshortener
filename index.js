@@ -72,7 +72,7 @@ app.get("/api/shorturl/:input", async (req, res) => {
   try {
     const result = await Url.findOne({ shortURL: input });
     if (!result) {
-      return res.status(404).json({ error: "URL not found" });
+      return res.json({ error: "URL not found" });
     }
     res.redirect(result.originalURL);
   } catch (err) {
